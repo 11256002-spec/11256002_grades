@@ -8,68 +8,18 @@ h3 { color: #9223b8; margin-top: 28px; }
     box-shadow: 0 6px 22px #ebddfa; padding: 38px 40px 30px 40px;
 }
 .nav-btns {
-  display: flex;
-  justify-content: center;
-  gap: 18px;
-  margin-bottom: 32px;
+    margin-bottom: 28px; 
+    display: flex; 
+    gap: 18px; 
+    justify-content: center; /* 置中 */
 }
-/* 成績主頁按鈕（淺紫） */
-.score-btn {
-  background: #9223b8;
-  color: #fff;
-  border: 2px solid #f0dbff;
-  padding: 12px 30px;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 17px;
-  cursor: pointer;
-  box-shadow: 0 2px 12px #dac6eb;
-  transition: background 0.2s;
+.nav-btns button, input[type="submit"], button[type="submit"], .admin-link-btn {
+    background: #9223b8; color: #fff; border: 2px solid #cba4f5; padding: 12px 30px; border-radius: 8px;
+    font-weight: bold; font-size: 17px; cursor: pointer;
+    box-shadow: 0 2px 12px #dac6eb; transition: background 0.2s, border-color 0.2s;
+    margin: 0 4px 0 0; display: inline-block;
 }
-
-.score-btn:hover {
-  background: #d9aef0;
-  border-color: #cba4f5;
-}
-
-/* 選退課按鈕（也改成淺紫） */
-.enroll-btn {
-  background: #da97f0ff;
-  color: #fff;
-  border: 2px solid #f0dbff;
-  padding: 12px 30px;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 17px;
-  cursor: pointer;
-  box-shadow: 0 2px 12px #dac6eb;
-  transition: background 0.2s;
-}
-
-.enroll-btn:hover {
-  background: #d9aef0;
-  border-color: #cba4f5;
-}
-
-/* 新增課程按鈕（保留原深紫） */
-.nav-btn {
-  background: #9223b8;
-  color: #fff;
-  border: 2px solid #cba4f5;
-  padding: 12px 30px;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 17px;
-  cursor: pointer;
-  box-shadow: 0 2px 12px #dac6eb;
-  transition: background 0.2s;
-}
-
-.nav-btn:hover {
-  background: #d9aef0;
-  border-color: #7e379c;
-}
-
+.nav-btns button:hover, input[type="submit"]:hover, button[type="submit"]:hover, .admin-link-btn:hover { background: #a749d1; border-color: #7e379c;}
 .msg-error { color:red; font-weight:bold; margin:10px 0 14px 0; border-bottom: 2px dashed #ea7ae3; padding-bottom: 4px;}
 table { border-collapse: collapse; margin-bottom: 18px; margin-top: 12px;}
 th, td { border: 2px solid #9223b8; padding: 8px 17px; text-align: center;}
@@ -87,18 +37,17 @@ form { display:inline; }
 </style>
 
 <div class="wrap-main">
-  <div class="nav-btns">
-    <form action="{% url 'score_main' student_id %}" method="get">
-      <button type="submit" class="score-btn">成績主頁</button>
-    </form>
-    <form action="{% url 'enroll_ops' student_id %}" method="get">
-      <button type="submit" class="enroll-btn">選退課</button>
-    </form>
-    <form action="{% url 'course_add' %}" method="get">
-      <button type="submit" class="nav-btn">新增課程</button>
-    </form>
-  </div>
-
+    <div class="nav-btns">
+        <form action="{% url 'score_main' student_id %}" method="get">
+            <button type="submit">成績主頁</button>
+        </form>
+        <form action="{% url 'enroll_ops' student_id %}" method="get">
+            <button type="submit">選退課</button>
+        </form>
+        <form action="{% url 'course_add' %}" method="get">
+            <button type="submit">新增課程</button>
+        </form>
+    </div>
 
     <h2>{{ student.name }}的加選退選課程</h2>
     {% if msg %}
