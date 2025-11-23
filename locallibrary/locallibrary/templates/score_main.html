@@ -1,0 +1,85 @@
+<style>
+body { font-family: '微軟正黑體', Arial; background: #faf9fc; }
+h2 { color: #9223b8; border-bottom: 2px solid #9223b8; padding-bottom: 8px; margin-top: 12px; }
+/* 按鈕容器：橫向排列 */
+.btn-row {
+    display: flex;
+    gap: 18px;
+    margin-top: 28px;
+    margin-bottom: 12px;
+}
+
+/* 成績主頁按鈕樣式（淺紫色） */
+.score-btn {
+    background: #da97f0ff; /* 淺紫色 */
+    color: #fff;
+    border: none;
+    padding: 8px 22px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px #ccc;
+    transition: background 0.2s;
+}
+
+.score-btn:hover {
+    background: #d9aef0; /* hover 時更柔和 */
+}
+
+/* 選退課與新增課程按鈕樣式（深紫色） */
+.nav-btn {
+    background: #9223b8;
+    color: #fff;
+    border: none;
+    padding: 8px 22px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px #ccc;
+    transition: background 0.2s;
+}
+
+.nav-btn:hover {
+    background: #a749d1;
+}
+
+table { border-collapse: collapse; margin-top: 18px; margin-bottom: 18px; }
+th, td { border: 2px solid #9223b8; padding: 8px 18px; text-align: center; }
+th { background: #ede7f6; color: #7e379c; }
+.average { color: #7e379c; font-weight: bold; font-size: 16px; margin-top: 12px; }
+</style>
+<div class="btn-row">
+    <form action="{% url 'score_main' student_id %}" method="get">
+        <button type="submit" class="score-btn">成績主頁</button>
+    </form>
+    <form action="{% url 'enroll_ops' student_id %}" method="get">
+        <button type="submit" class="nav-btn">選退課</button>
+    </form>
+    <form action="{% url 'course_add' %}" method="get">
+        <button type="submit" class="nav-btn">新增課程</button>
+    </form>
+</div>
+
+
+
+
+<h2>{{ student.name }}的修課成績</h2>
+<table>
+  <tr>
+    <th>課名</th>
+    <th>期中分數</th>
+    <th>期末分數</th>
+    <th>平均分數</th>
+  </tr>
+  {% for e in enrollments %}
+  <tr>
+    <td><a href="{% url 'course_detail' e.course.id %}">{{ e.course.name }}</a></td>
+    <td>{{ e.midterm_score }}</td>
+    <td>{{ e.final_score }}</td>
+    <td>{{ e.average }}</td>
+  </tr>
+  {% endfor %}
+</table>
+<p class="average">全部平均分數：{{ average }}</p>

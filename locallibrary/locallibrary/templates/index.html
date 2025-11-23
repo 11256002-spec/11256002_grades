@@ -1,0 +1,31 @@
+<style>
+body { font-family: '微軟正黑體', Arial; background: #faf9fc; }
+.main-wrap {
+    max-width: 540px; margin: 38px auto 0 auto;
+    background: #f7f0fa; border: 3px solid #cba4f5;
+    border-radius: 20px;
+    box-shadow: 0 6px 22px #ebddfa;
+    padding: 38px 40px 30px 40px;
+}
+h1 { color: #9223b8; margin-bottom: 24px; border-bottom: 2.5px solid #9223b8; padding-bottom: 6px; letter-spacing: 2px;}
+ul { margin-top: 22px; padding: 0 12px;}
+ul li { font-size: 18px; margin-bottom: 15px; background: #fff6fc;
+    border: 2px solid #cba4f5; border-radius: 7px; list-style: circle; padding: 7px 0 7px 18px;}
+ul a { color: #9223b8; text-decoration: underline; font-weight: bold; }
+.admin-link-btn {
+    margin: 38px auto 0 auto; background: #9223b8; color: #fff; border: 2px solid #cba4f5; padding: 10px 38px;
+    border-radius: 8px; font-weight: bold; font-size: 17px; cursor: pointer; box-shadow: 0 3px 18px #dac6eb;
+    display: block; text-align: center; transition: background 0.2s, border-color 0.2s;
+}
+.admin-link-btn:hover { background: #a749d1; border-color: #7e379c;}
+</style>
+
+<div class="main-wrap">
+    <h1>成績系統</h1>
+    <ul>
+        <li><a href="/scores/11/">成績查詢主頁</a></li>
+        <li><a href="/course/add/">新增課程</a></li>
+        <li><a href="/enroll/11/">選退課</a></li>
+    </ul>
+    <a href="/admin/" class="admin-link-btn">回到管理後台</a>
+</div>

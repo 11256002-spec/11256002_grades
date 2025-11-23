@@ -1,0 +1,132 @@
+<style>
+body { font-family: '微軟正黑體', Arial; background: #faf9fc; }
+.page-wrap {
+    max-width: 480px; margin: 42px auto 0 auto;
+    background: #f7f0fa; border: 3px solid #cba4f5;
+    border-radius: 20px; box-shadow: 0 6px 22px #ebddfa;
+    padding: 38px 40px 30px 40px;
+}
+h2 { color: #9223b8; border-bottom: 2.5px solid #9223b8; padding-bottom: 8px; margin-top: 32px; letter-spacing: 1.3px;}
+
+.btn-row {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+/* 成績主頁按鈕（淺紫） */
+.score-btn {
+  background: #9223b8;
+  color: #fff;
+  border: 2px solid #f0dbff;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 17px;
+  cursor: pointer;
+  box-shadow: 0 2px 12px #dac6eb;
+  transition: background 0.2s;
+}
+
+.score-btn:hover {
+  background: #d9aef0;
+  border-color: #cba4f5;
+}
+
+/* 選退課按鈕（也改成淺紫） */
+.enroll-btn {
+  background: #9223b8;
+  color: #fff;
+  border: 2px solid #f0dbff;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 17px;
+  cursor: pointer;
+  box-shadow: 0 2px 12px #dac6eb;
+  transition: background 0.2s;
+}
+
+.enroll-btn:hover {
+  background: #d9aef0;
+  border-color: #cba4f5;
+}
+
+/* 新增課程按鈕（保留原深紫） */
+.nav-btn {
+  background: #da97f0ff;
+  color: #fff;
+  border: 2px solid #cba4f5;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 17px;
+  cursor: pointer;
+  box-shadow: 0 2px 12px #dac6eb;
+  transition: background 0.2s;
+}
+
+.nav-btn:hover {
+  background: #d9aef0;
+  border-color: #7e379c;
+}
+
+.form-block {
+    background: #fff; padding: 28px 36px; border-radius: 12px; box-shadow: 0 3px 12px #ebddfa;
+    border: 2.2px solid #cba4f5;
+    margin-bottom: 22px;
+}
+label { color: #7e379c; font-weight: bold; }
+input[type="submit"] {
+    background: #9223b8; color: #fff; padding: 8px 28px; border-radius: 7px; font-size: 15px; border: 2px solid #cba4f5;
+    cursor: pointer; font-weight: bold; margin-top: 18px; box-shadow: 0 2px 8px #dac6eb;
+    transition: background 0.2s, border-color 0.2s;
+}
+input[type="submit"]:hover { background: #a749d1; border-color: #7e379c;}
+.back-link {
+    margin-top: 30px; color: #9223b8; text-decoration: underline; font-size: 15px;
+    display: inline-block; font-weight: bold;
+}
+.msg-error {
+    color: red; font-weight: bold; margin: 14px 0 10px 0;
+    border-bottom: 2px dashed #ea7ae3;
+    padding-bottom: 6px;
+}
+.admin-link-btn {
+    margin: 30px auto 0 auto; background: #9223b8; color: #fff; border: 2px solid #cba4f5; padding: 9px 36px;
+    border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 3px 16px #dac6eb;
+    display: block; text-align: center; transition: background 0.2s, border-color 0.2s;
+}
+.admin-link-btn:hover { background: #a749d1; border-color: #7e379c;}
+</style>
+
+<div class="page-wrap">
+  <div class="btn-row">
+    <form action="{% url 'score_main' student_id %}" method="get">
+      <button type="submit" class="score-btn">成績主頁</button>
+    </form>
+    <form action="{% url 'enroll_ops' student_id %}" method="get">
+      <button type="submit" class="enroll-btn">選退課</button>
+    </form>
+    <form action="{% url 'course_add' %}" method="get">
+      <button type="submit" class="nav-btn">新增課程</button>
+    </form>
+  </div>
+
+
+    <h2>新增課程</h2>
+    <div class="form-block">
+        {% if msg %}
+            <div class="msg-error">{{ msg }}</div>
+        {% endif %}
+        <form method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <input type="submit" value="送出">
+        </form>
+    </div>
+    <a class="back-link" href="{% url 'score_main' student_id %}">返回成績主頁</a>
+    <a href="/admin/" class="admin-link-btn">回到管理後台</a>
+</div>
+
