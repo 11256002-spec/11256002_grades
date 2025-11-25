@@ -1,11 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Student, Course, Enrollment
 from django import forms
+<<<<<<< HEAD
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 # 成績管理系統功能
+=======
+
+>>>>>>> c911ab5d0de40ec29bfb2df60f9f3f2b68eb70f8
 def get_student():
     return Student.objects.first()
 
@@ -96,6 +100,7 @@ def enroll_ops(request, student_id):
         'student_id': student.id,
         'msg': msg,
     })
+<<<<<<< HEAD
 
 # 用戶註冊
 def register(request):
@@ -129,3 +134,5 @@ def logout_view(request):
     logout(request)
     messages.success(request, "已成功登出！")
     return redirect('login')
+=======
+>>>>>>> c911ab5d0de40ec29bfb2df60f9f3f2b68eb70f8

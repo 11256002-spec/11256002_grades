@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
+<<<<<<< HEAD
     path('scores/<int:student_id>/', views.score_main, name='score_main'),
     path('course/<int:course_id>/', views.course_detail, name='course_detail'),
     path('course/add/', views.course_add, name='course_add'),
@@ -14,3 +15,10 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
 ]
 
+=======
+    path('scores/<int:student_id>/', views.score_main, name='score_main'),  
+    path('course/<int:course_id>/', views.course_detail, name='course_detail'),
+    path('course/add/', views.course_add, name='course_add'),
+    path('enroll/<int:student_id>/', views.enroll_ops, name='enroll_ops'),
+]
+>>>>>>> c911ab5d0de40ec29bfb2df60f9f3f2b68eb70f8
