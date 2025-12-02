@@ -1,15 +1,18 @@
 from django.contrib import admin
-<<<<<<< HEAD
+from .models import StudentAccount, Student, Course, Enrollment
 
-admin.site.site_header = '成績管理系統'
-admin.site.site_title = '成績管理系統'
-admin.site.index_title = '歡迎使用成績管理後台'
+@admin.register(StudentAccount)
+class StudentAccountAdmin(admin.ModelAdmin):
+    list_display = ("student_id", "user")
 
-from .models import Student, Course, Enrollment
-=======
-from .models import Student, Course, Enrollment
+@admin.register(Student)
+class StudentAdmin(admin.ModelAdmin):
+    list_display = ("student_id", "name")
 
->>>>>>> c911ab5d0de40ec29bfb2df60f9f3f2b68eb70f8
-admin.site.register(Student)
-admin.site.register(Course)
-admin.site.register(Enrollment)
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ("code", "name", "teacher")
+
+@admin.register(Enrollment)
+class EnrollmentAdmin(admin.ModelAdmin):
+    list_display = ("student", "course", "midterm_score", "final_score")
