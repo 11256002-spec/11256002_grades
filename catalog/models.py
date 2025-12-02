@@ -29,6 +29,7 @@ class Course(models.Model):
         return f"{self.code} - {self.name}"
 
 
+
 # 修課紀錄
 class Enrollment(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
@@ -38,3 +39,10 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return f"{self.student.name} 修習 {self.course.name}"
+
+class Score(models.Model):
+    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
+    value = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.enrollment.student} - {self.value}"

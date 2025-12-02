@@ -1,9 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from .models import Course, Enrollment
+from .models import Course, Enrollment, Score  
 
 def home(request):
     return render(request, "home.html")
+
+def score_detail(request, score_id):
+    return render(request, "score_detail.html", {"score_id": score_id})
+
+def register(request):
+    return render(request, "register.html")
 
 def index(request):
     return render(request, "index.html")
