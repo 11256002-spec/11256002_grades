@@ -1,0 +1,50 @@
+<style>
+body { font-family: '微軟正黑體', Arial; background: #faf9fc; }
+h2 { color: #9223b8; border-bottom: 2px solid #9223b8; padding-bottom: 8px; margin-top: 32px;}
+h3 { color: #9223b8; margin-top: 32px; font-size: 32px;}
+.nav-btns { margin-bottom: 28px; display: flex; gap: 18px; }
+.nav-btns button {
+    background: #9223b8; color: #fff; border: none; padding: 8px 22px; border-radius: 6px;
+    font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 2px 8px #ccc; transition: background 0.2s;
+}
+.nav-btns button:hover { background: #a749d1; }
+table { border-collapse: collapse; margin-bottom: 22px;}
+th, td { border: 2px solid #9223b8; padding: 8px 16px; text-align: center; }
+th { background: #ede7f6; }
+.info { color: #6f3da6; font-size: 15px; margin-bottom: 20px; }
+.admin-link-btn {
+    margin: 32px auto 0 auto; background: #9223b8; color: #fff; border: 2px solid #cba4f5; padding: 10px 34px;
+    border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 3px 18px #dac6eb;
+    display: block; text-align: center; transition: background 0.2s, border-color 0.2s;
+}
+.admin-link-btn:hover { background: #a749d1; border-color: #7e379c;}
+</style>
+
+<div class="nav-btns">
+    <form action="{% url 'score_main' student_id %}" method="get">
+        <button type="submit">成績主頁</button>
+    </form>
+    <form action="{% url 'enroll_ops' student_id %}" method="get">
+        <button type="submit">選退課</button>
+    </form>
+    <form action="{% url 'course_add' %}" method="get">
+        <button type="submit">新增課程</button>
+    </form>
+</div>
+<h3>課程詳情</h3>
+<h2>{{ course.name }} ({{ course.code }})</h2>
+<p class="info">授課老師：{{ course.teacher }}</p>
+<table>
+  <tr><th>學生</th><th>期中分數</th><th>期末分數</th></tr>
+  {% for e in enrollments %}
+  <tr>
+    <td>{{ e.student.name }}</td>
+    <td>{{ e.midterm_score }}</td>
+    <td>{{ e.final_score }}</td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="3">尚無學生修習此課</td></tr>
+  {% endfor %}
+</table>
+
+<a href="/admin/" class="admin-link-btn">回到管理後台</a>

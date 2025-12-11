@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>學生成績總覽</title>
+    <style>
+        body {
+            font-family: "微軟正黑體", Arial;
+            background: #f8f6fb;
+            margin: 0;
+            padding: 0;
+        }
+
+        .top-bar {
+            background: #7a2cbc;
+            color: #fff;
+            padding: 14px 28px;
+            font-size: 18px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 28px auto;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            padding: 24px 30px 30px 30px;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            margin: 0;
+            color: #7a2cbc;
+        }
+
+        .profile-box {
+            background: #f3ecff;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-bottom: 22px;
+            border: 1px solid #d5c4ff;
+        }
+
+        .profile-box span.label {
+            color: #666;
+            margin-right: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th, td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+
+        th {
+            background: #f3ecff;
+            color: #7a2cbc;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #999;
+            margin-top: 20px;
+        }
+
+        .avg-box {
+            margin-top: 16px;
+            text-align: right;
+            font-size: 16px;
+        }
+
+        .avg-box span {
+            font-weight: bold;
+            color: #e67e22;
+        }
+
+        .enroll-btn {
+            font-size: 14px;
+            color: #fff;
+            background: #6366f1;
+            padding: 6px 12px;
+            border-radius: 999px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        學生成績系統
+    </div>
+
+    <div class="container">
+        <div class="header-row">
+            <h1>我的本學期課程與成績</h1>
+            <a href="{% url 'enroll_ops' %}" class="enroll-btn">
+                加選 / 退選課程
+            </a>
+        </div>
+
+        <div class="profile-box">
+            {% if student %}
+                <div><span class="label">姓名：</span>{{ student.name }}</div>
+                <div><span class="label">學號：</span>{{ student.student_id }}</div>
+            {% else %}
+                <div>目前尚未建立對應的學生資料，請聯絡系統管理者。</div>
+            {% endif %}
+        </div>
+
+        {% if enrollments %}
+            <table>
+                <tr>
+                    <th>課程代碼</th>
+                    <th>課程名稱</th>
+                    <th>授課老師</th>
+                    <th>期中</th>
+                    <th>期末</th>
+                    <th>平均</th>
+                </tr>
+                {% for e in enrollments %}
+                <tr>
+                    <td>{{ e.course.code }}</td>
+                    <td>{{ e.course.name }}</td>
+                    <td>{{ e.course.teacher }}</td>
+                    <td>{{ e.midterm_score|default:"-" }}</td>
+                    <td>{{ e.final_score|default:"-" }}</td>
+                    <td>
+                        {% if e.average %}
+                            {{ e.average|floatformat:1 }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <div class="avg-box">
+                本學期平均成績：
+                {% if avg_score %}
+                    <span>{{ avg_score|floatformat:1 }}</span>
+                {% else %}
+                    <span>尚未有完整成績</span>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="no-data">
+                目前尚未有修課紀錄，請先加選課程。
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

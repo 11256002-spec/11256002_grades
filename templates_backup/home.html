@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>成績系統入口</title>
+    <style>
+        body {
+            font-family: '微軟正黑體', Arial;
+            background: #faf9fc;
+            text-align: center;
+            padding-top: 80px;
+        }
+        h1 {
+            color: #9223b8;
+            margin-bottom: 40px;
+        }
+        .btn {
+            display: inline-block;
+            margin: 12px;
+            padding: 12px 28px;
+            background: #9223b8;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 18px;
+        }
+        .btn:hover {
+            background: #a749d1;
+        }
+    </style>
+</head>
+<body>
+    <h1>成績系統入口</h1>
+
+    <!-- 學生登入 -->
+    <a href="{% url 'student_login' %}" class="btn">學生</a>
+
+    <!-- 教職員登入 -->
+    <a href="{% url 'staff_login' %}" class="btn">教職員</a>
+</body>
+</html>

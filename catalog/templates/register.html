@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>學生註冊帳號</title>
+  <style>
+    body {
+      background: #f5f7fb;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+      margin: 0;
+      padding: 40px 0;
+    }
+    .box {
+      width: 460px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      padding: 32px 36px 28px;
+    }
+    h2 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #111827;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #4b5563;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 9px 10px;
+      margin-top: 4px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px #bfdbfe;
+    }
+    .error {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #fef2f2;
+      color: #b91c1c;
+      font-size: 13px;
+    }
+    .btn {
+      width: 100%;
+      margin-top: 18px;
+      padding: 10px 0;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .link {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 13px;
+    }
+    .link a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+<div class="box">
+  <h2>學生註冊帳號</h2>
+
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <label for="full_name">姓名：</label>
+    <input type="text" id="full_name" name="full_name" required>
+
+    <label for="student_id">學號：</label>
+    <input type="text" id="student_id" name="student_id" required>
+
+    <label for="username">登入帳號：</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="password">登入密碼：</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="submit" class="btn">註冊</button>
+  </form>
+
+  <div class="link">
+    已有帳號？<a href="{% url 'student_login' %}">前往登入</a>
+  </div>
+</div>
+</body>
+</html>

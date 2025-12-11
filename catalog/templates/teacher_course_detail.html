@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <title>{{ course.code }} {{ course.name }} | 成績管理</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+            padding: 40px 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            padding: 28px 40px 36px;
+        }
+        .header-card {
+            background: #f9fafb;
+            border-radius: 16px;
+            padding: 20px 24px 18px;
+            margin-bottom: 18px;
+        }
+        .header-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 6px;
+        }
+        .header-subtitle {
+            font-size: 13px;
+            color: #6b7280;
+        }
+        a.back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 14px;
+            font-size: 13px;
+            color: #6b7280;
+            text-decoration: none;
+        }
+        a.back-link:hover {
+            color: #2563eb;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 4px;
+        }
+        thead {
+            background: #f9fafb;
+        }
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 14px;
+        }
+        th {
+            color: #6b7280;
+            font-weight: 600;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        tbody tr {
+            border-bottom: 1px solid #f3f4f6;
+        }
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+        td {
+            color: #111827;
+        }
+        input[type="number"] {
+            width: 80px;
+            padding: 6px 8px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 14px;
+            text-align: right;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 1px #bfdbfe;
+        }
+        .avg-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: #f3f4ff;
+            color: #4338ca;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .btn-primary {
+            margin-top: 16px;
+            padding: 8px 18px;
+            border-radius: 999px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+            transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.1s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.4);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 6px 14px rgba(37, 99, 235, 0.3);
+        }
+        .hint {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="{% url 'teacher_dashboard' %}" class="back-link">← 回老師首頁</a>
+
+    <div class="header-card">
+        <h1 class="header-title">
+            {{ course.code }} {{ course.name }} - 成績管理
+        </h1>
+        <p class="header-subtitle">
+            維護本課程所有修課學生的期中、期末成績與平均分數
+        </p>
+    </div>
+
+        <form method="post">
+        {% csrf_token %}
+        <table>
+            <thead>
+            <tr>
+                <th style="width: 12%;">學號</th>
+                <th style="width: 20%;">姓名</th>
+                <th style="width: 16%;">期中</th>
+                <th style="width: 16%;">期末</th>
+                <th style="width: 16%;">平均</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for e in enrollments %}
+            <tr>
+                <td>{{ e.student.student_id }}</td>
+                <td>{{ e.student.name }}</td>
+                <td>
+                    <input type="number"
+                           name="mid_{{ e.id }}"
+                           value="{{ e.midterm_score }}">
+                </td>
+                <td>
+                    <input type="number"
+                           name="final_{{ e.id }}"
+                           value="{{ e.final_score }}">
+                </td>
+                <td>
+                    {% if e.average is not None %}
+                        <span class="avg-pill">{{ e.average|floatformat:1 }}</span>
+                    {% else %}
+                        <span class="avg-pill">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="color:#9ca3af; text-align:center; padding:24px 0;">
+                    目前沒有學生修這門課程。
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="submit" class="btn-primary">儲存成績</button>
+        <div class="hint">修改任一分數後按「儲存成績」，學生端畫面會同步更新。</div>
+    </form>
