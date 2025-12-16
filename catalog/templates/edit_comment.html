@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>編輯留言</h2>
+
+<form method="POST">
+  {% csrf_token %}
+  <textarea name="content" rows="5" required>{{ comment.content }}</textarea><br>
+  <button type="submit">更新留言</button>
+</form>
+
+<p><a href="{% url 'course_comments' comment.course.id %}">返回留言板</a></p>
+{% endblock %}

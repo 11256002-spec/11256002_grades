@@ -16,6 +16,24 @@
             color: #fff;
             padding: 14px 28px;
             font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-btn {
+            font-size: 13px;
+            color: #fff;
+            background: #dc2626;
+            padding: 6px 14px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.15s ease;
+        }
+
+        .admin-btn:hover {
+            background: #b91c1c;
         }
 
         .container {
@@ -93,12 +111,19 @@
             padding: 6px 12px;
             border-radius: 999px;
             text-decoration: none;
+            margin-left: 8px;
         }
     </style>
 </head>
 <body>
     <div class="top-bar">
-        學生成績系統
+        <span>學生成績系統</span>
+
+        {% if user.is_superuser %}
+        <a href="/admin/" class="admin-btn">
+            🔑 超級管理者
+        </a>
+        {% endif %}
     </div>
 
     <div class="container">

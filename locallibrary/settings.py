@@ -22,8 +22,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
-    "catalog",  # 你的成績系統 app
+    "catalog.apps.CatalogConfig",
 ]
 
 
@@ -112,3 +111,6 @@ STATIC_URL = "static/"
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

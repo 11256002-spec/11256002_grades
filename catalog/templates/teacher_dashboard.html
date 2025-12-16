@@ -44,6 +44,22 @@
             font-size: 13px;
             font-weight: 600;
         }
+        .admin-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+            background: #dc2626;
+            text-decoration: none;
+            margin-left: 12px;
+            transition: all 0.15s ease;
+        }
+        .admin-btn:hover {
+            background: #b91c1c;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -131,7 +147,14 @@
             <div class="title">{{ teacher.teacher_name }} 的課程列表</div>
             <div class="subtitle">管理本學期每門課程的修課學生與成績</div>
         </div>
-        <div class="badge">老師後台</div>
+        <div>
+            <span class="badge">老師後台</span>
+            {% if user.is_superuser %}
+            <a href="/admin/" class="admin-btn">
+                🔑 超級管理者
+            </a>
+            {% endif %}
+        </div>
     </div>
 
     <div class="top-bar">
@@ -146,7 +169,7 @@
             <th style="width: 18%;">課程代碼</th>
             <th>課程名稱</th>
             <th style="width: 15%;">修課人數</th>
-            <th style="width: 18%;"></th>
+            <th style="width: 28%;"></th> <!-- 調整寬度給兩個按鈕 -->
         </tr>
         </thead>
         <tbody>
@@ -158,6 +181,9 @@
             <td>
                 <a href="{% url 'teacher_course_detail' c.id %}" class="btn-link">
                     管理成績
+                </a>
+                <a href="{% url 'teacher_course_students' c.id %}" class="btn-link" style="margin-left:8px;">
+                    查詢修課學生名單
                 </a>
             </td>
         </tr>

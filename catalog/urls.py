@@ -1,33 +1,46 @@
-from django.urls import path
-from . import views
+# locallibrary/urls.py
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+
+from catalog import views
 
 urlpatterns = [
+    # Django admin
+    path('admin/', admin.site.urls),
+
     # 首頁
-    path("", views.home, name="home"),
+    path('', views.home, name='home'),
 
-    # 首頁按鈕用的兩個登入網址
-    path("student/login/", views.student_login, name="student_login"),
-    path("staff/login/", views.staff_login, name="staff_login"),
+    # 登入相關
+    path('student/login/', views.student_login, name='student_login'),
+    path('staff/login/', views.staff_login, name='staff_login'),
+    path('login/', views.login_view, name='login'),
 
-    # 登入後的學生首頁（成績總覽）
-    path("index/", views.index, name="index"),
+    # 註冊
+    path('register/', views.register, name='register'),
 
-    # 學生加選 / 退選頁面
-    path("enroll_ops/", views.enroll_ops, name="enroll_ops"),
+    # 學生首頁與操作
+    path('index/', views.index, name='index'),
+    path('enroll_ops/', views.enroll_ops, name='enroll_ops'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
 
-    # 共用登入 / 註冊
-    path("login/", views.login_view, name="login"),   # 先保留舊網址，以防別處用到
-    path("register/", views.register, name="register"),
+    # 課程與留言
+    path('course/<int:course_id>/', views.course_detail, name='course_detail'),
+    path('course/<int:course_id>/comments/', views.course_comments, name='course_comments'),
+    path('comment/<int:comment_id>/edit/', views.edit_comment, name='edit_comment'),
 
-    # 其他原本頁面
-    path("scores/<int:score_id>/", views.score_detail, name="score_detail"),
-    path("course/<int:course_id>/", views.course_detail, name="course_detail"),
+    # 老師首頁與課程管理
+    path('teacher/', views.teacher_dashboard, name='teacher_dashboard'),
+    path('teacher/course/<int:course_id>/', views.teacher_course_detail, name='teacher_course_detail'),
+    path('teacher/course/<int:course_id>/students/', views.teacher_course_students, name='teacher_course_students'),
 
-    # 老師相關頁面
-    path("teacher/", views.teacher_dashboard, name="teacher_dashboard"),
-    path(
-        "teacher/course/<int:course_id>/",
-        views.teacher_course_detail,
-        name="teacher_course_detail",
-    ),
+    # 分數詳細（佔位）
+    path('scores/<int:score_id>/', views.score_detail, name='score_detail'),
 ]
+
+# 靜態檔案 + Media 支援（頭像上傳等）
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

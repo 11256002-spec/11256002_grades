@@ -27,6 +27,14 @@
         .btn:hover {
             background: #a749d1;
         }
+
+        /* 管理者專用按鈕樣式 */
+        .admin-btn {
+            background: #444;
+        }
+        .admin-btn:hover {
+            background: #000;
+        }
     </style>
 </head>
 <body>
@@ -37,5 +45,12 @@
 
     <!-- 教職員登入 -->
     <a href="{% url 'staff_login' %}" class="btn">教職員</a>
+
+    <!-- ⭐ 超級管理者（只有 superuser 看得到） -->
+    {% if user.is_authenticated and user.is_superuser %}
+        <br><br>
+        <a href="/admin/" class="btn admin-btn">超級管理者</a>
+    {% endif %}
+
 </body>
 </html>

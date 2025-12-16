@@ -2,7 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# 學生帳號：連到 Django 內建 User，之後用來登入
+# ======================
+# 帳號相關
+# ======================
+
+# 學生帳號：連到 Django 內建 User
 class StudentAccount(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     student_id = models.CharField(max_length=20, unique=True)
@@ -11,7 +15,7 @@ class StudentAccount(models.Model):
         return f"{self.student_id} - {self.user.username}"
 
 
-# 教職員帳號（老師）：一樣連到 User
+# 教職員帳號（老師）
 class TeacherAccount(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     teacher_name = models.CharField(max_length=50)
@@ -20,7 +24,34 @@ class TeacherAccount(models.Model):
         return self.teacher_name
 
 
-# 學生基本資料（之後也可以直接拿 StudentAccount 取代）
+# ======================
+# 個人資料（頭像＋姓名）
+# ======================
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=50)
+    avatar = models.ImageField(
+        upload_to='avatars/',
+        default='avatars/default.png'
+    )
+
+    def __str__(self):
+        return self.full_name
+
+    # 方便 template 直接取圖片 URL
+    @property
+    def avatar_url(self):
+        if self.avatar and hasattr(self.avatar, 'url'):
+            return self.avatar.url
+        return '/media/avatars/default.png'
+
+
+# ======================
+# 學生 / 課程 / 修課
+# ======================
+
+# 學生基本資料
 class Student(models.Model):
     name = models.CharField(max_length=50)
     student_id = models.CharField(max_length=20, unique=True, null=True, blank=True)
@@ -29,7 +60,7 @@ class Student(models.Model):
         return f"{self.name} ({self.student_id})"
 
 
-# 課程：連到老師帳號
+# 課程
 class Course(models.Model):
     code = models.CharField(max_length=20, unique=True)
     name = models.CharField(max_length=100)
@@ -45,7 +76,8 @@ class Course(models.Model):
     def __str__(self):
         return f"{self.code} - {self.name}"
 
-# 修課紀錄：一筆代表「某學生選了某課」
+
+# 修課紀錄（學生 × 課程）
 class Enrollment(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -53,7 +85,7 @@ class Enrollment(models.Model):
     final_score = models.IntegerField(null=True, blank=True)
 
     class Meta:
-        unique_together = ("student", "course")  # 同一學生同一課只會有一筆
+        unique_together = ("student", "course")
 
     def __str__(self):
         return f"{self.student.name} 修習 {self.course.name}"
@@ -62,11 +94,32 @@ class Enrollment(models.Model):
     def average(self):
         if self.midterm_score is None or self.final_score is None:
             return None
-        return (self.midterm_score + self.final_score) / 2
+        return round((self.midterm_score + self.final_score) / 2, 1)
 
 
-# 如不特別需要額外分數表，可以先不用 Score 這個 model；
-# 先保留但之後可能會拿掉
+# ======================
+# 課程留言系統
+# ======================
+
+class CourseComment(models.Model):
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.course.name}"
+
+
+# ======================
+# （可保留）分數表
+# ======================
+
 class Score(models.Model):
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
     value = models.IntegerField()
