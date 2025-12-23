@@ -1,67 +1,103 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <title>修課學生名單</title>
+    <meta charset="utf-8">
+    <title>{{ course.code }} {{ course.name }} | 修課學生名單</title>
     <style>
         body {
-            font-family: "微軟正黑體";
-            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+            padding: 40px 0;
         }
         .container {
-            max-width: 800px;
-            margin: 40px auto;
-            background: #fff;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,.06);
+            max-width: 960px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            padding: 28px 40px 36px;
+        }
+        a.back-link {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        a.back-link:hover {
+            color: #2563eb;
         }
         h1 {
-            color: #4f46e5;
-            margin-bottom: 16px;
+            font-size: 26px;
+            font-weight: 700;
+            color: #111827;
+            margin: 12px 0;
+        }
+        .subtitle {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 18px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 12px;
         }
         th, td {
-            padding: 10px;
+            padding: 10px 12px;
+            border-bottom: 1px solid #f3f4f6;
             text-align: center;
-            border-bottom: 1px solid #eee;
+            font-size: 14px;
         }
         th {
-            background: #eef2ff;
+            background: #f9fafb;
+            color: #6b7280;
+            font-weight: 600;
         }
-        .back {
-            display: inline-block;
-            margin-top: 20px;
-            color: #4f46e5;
-            text-decoration: none;
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+        .empty {
+            font-size: 14px;
+            color: #9ca3af;
+            text-align: center;
+            padding: 24px 0;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>{{ course.name }}｜修課學生名單</h1>
+    <!-- 返回按鈕 -->
+    <a href="{% url 'teacher_dashboard' %}" class="back-link">← 回到老師首頁</a>
+    <a href="{% url 'teacher_course_detail' course.id %}" class="back-link">← 回到成績管理</a>
 
+    <!-- 課程標題 -->
+    <h1>{{ course.code }} {{ course.name }} - 修課學生名單</h1>
+    <p class="subtitle">本課程所有修課學生</p>
+
+    <!-- 學生名單 -->
     {% if enrollments %}
-    <table>
-        <tr>
+      <table>
+        <thead>
+          <tr>
             <th>學號</th>
             <th>姓名</th>
-        </tr>
-        {% for e in enrollments %}
-        <tr>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in enrollments %}
+          <tr>
             <td>{{ e.student.student_id }}</td>
             <td>{{ e.student.name }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     {% else %}
-        <p>目前尚無學生修課。</p>
+      <div class="empty">目前尚無學生修課。</div>
     {% endif %}
-
-    <a href="{% url 'teacher_dashboard' %}" class="back">← 回老師後台</a>
 </div>
 </body>
 </html>

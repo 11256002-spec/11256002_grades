@@ -117,6 +117,32 @@
             transform: translateY(0);
             box-shadow: 0 6px 14px rgba(37, 99, 235, 0.3);
         }
+        .btn-secondary {
+            margin-top: 16px;
+            padding: 8px 18px;
+            border-radius: 999px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2563eb;
+            background: #eef2ff;
+            cursor: pointer;
+            margin-left: 8px;
+            text-decoration: none; /* 移除底線 */
+            transition: background 0.15s ease;
+        }
+        .btn-secondary:hover {
+            background: #e0e7ff;
+        }
+        .search-box {
+            margin-bottom: 16px;
+        }
+        .search-input {
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 14px;
+        }
         .hint {
             margin-top: 6px;
             font-size: 12px;
@@ -126,7 +152,7 @@
 </head>
 <body>
 <div class="container">
-    <a href="{% url 'teacher_dashboard' %}" class="back-link">← 回老師首頁</a>
+    <a href="{% url 'teacher_dashboard' %}" class="back-link">← 回到老師首頁</a>
 
     <div class="header-card">
         <h1 class="header-title">
@@ -137,7 +163,13 @@
         </p>
     </div>
 
-        <form method="post">
+    <!-- 查詢學生區塊 -->
+    <form method="get" action="{% url 'teacher_course_detail' course.id %}" class="search-box">
+        <input type="text" name="query" placeholder="輸入學號或姓名查詢" class="search-input">
+        <button type="submit" class="btn-secondary">查詢學生</button>
+    </form>
+
+    <form method="post">
         {% csrf_token %}
         <table>
             <thead>
@@ -154,16 +186,8 @@
             <tr>
                 <td>{{ e.student.student_id }}</td>
                 <td>{{ e.student.name }}</td>
-                <td>
-                    <input type="number"
-                           name="mid_{{ e.id }}"
-                           value="{{ e.midterm_score }}">
-                </td>
-                <td>
-                    <input type="number"
-                           name="final_{{ e.id }}"
-                           value="{{ e.final_score }}">
-                </td>
+                <td><input type="number" name="mid_{{ e.id }}" value="{{ e.midterm_score }}"></td>
+                <td><input type="number" name="final_{{ e.id }}" value="{{ e.final_score }}"></td>
                 <td>
                     {% if e.average is not None %}
                         <span class="avg-pill">{{ e.average|floatformat:1 }}</span>
@@ -183,5 +207,9 @@
         </table>
 
         <button type="submit" class="btn-primary">儲存成績</button>
+        <a href="{% url 'teacher_course_students' course.id %}" class="btn-secondary">查看學生名單</a>
         <div class="hint">修改任一分數後按「儲存成績」，學生端畫面會同步更新。</div>
     </form>
+</div>
+</body>
+</html>

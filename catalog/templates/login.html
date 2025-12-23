@@ -1,130 +1,105 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>成績管理系統登入</title>
+  <title>系統登入</title>
   <style>
-    body {
-      background: #f9f7fb;
-      font-family: "Segoe UI", "微軟正黑體", Arial, sans-serif;
-    }
+  body {
+    background: #f5f7fb;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+    margin: 0;
+    padding: 40px 0;
+  }
+  .container {
+    max-width: 460px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    padding: 32px;
+    text-align: center;
+  }
+  h1 {
+    font-size: 24px;
+    margin-bottom: 18px;
+    color: #111827;
+  }
+  .msg {
+    color: #b91c1c;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 9px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    font-size: 14px;
+  }
+  label {
+    display: block;
+    text-align: left;   /* 讓標籤文字靠左 */
+    margin-bottom: 4px;
+    color: #111827;
+    font-size: 14px;
+  }
+  button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px 0;
+    border-radius: 8px;
+    border: none;
+    background: #2563eb;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #1e40af;
+  }
+  .link {
+    margin-top: 14px;
+    font-size: 13px;
+  }
+  .link a {
+    color: #2563eb;
+    text-decoration: underline;
+  }
+</style>
 
-    .login-box {
-      width: 420px;
-      margin: 60px auto;
-      background: #f7f0fd;
-      border: 3px solid #b68fe6;
-      border-radius: 26px;
-      box-shadow: 0 10px 24px #d7c4ee;
-      padding: 40px 38px 28px 38px;
-      text-align: center;
-    }
-
-    h2 {
-      color: #8933c7;
-      font-weight: 600;
-      margin-bottom: 24px;
-    }
-
-    label {
-      float: left;
-      color: #8933c7;
-      font-size: 17px;
-      margin-top: 12px;
-    }
-
-    input[type="text"],
-    input[type="password"] {
-      width: 100%;
-      padding: 11px 8px;
-      margin: 8px 0 18px 0;
-      border-radius: 5px;
-      border: 1.5px solid #b68fe6;
-      background: #f9f7fb;
-      font-size: 16px;
-      outline: none;
-      box-sizing: border-box;
-    }
-
-    .msg {
-      color: #d85ba6;
-      font-size: 16px;
-      margin-bottom: 12px;
-    }
-
-    button {
-      background: #9936c9;
-      color: #fff;
-      font-size: 18px;
-      font-weight: 500;
-      padding: 12px 40px;
-      border: none;
-      border-radius: 9px;
-      cursor: pointer;
-      margin-top: 18px;
-      margin-bottom: 10px;
-      box-shadow: 0 4px 14px #d7c4ee;
-      transition: 0.2s;
-    }
-
-    button:hover {
-      background: #b777ea;
-    }
-
-    .register-link {
-      display: block;
-      background: #e9d6fa;
-      color: #8933c7;
-      font-size: 17px;
-      border-radius: 9px;
-      border: 1.5px solid #b68fe6;
-      text-decoration: none;
-      margin: 18px auto 0 auto;
-      padding: 12px 0;
-      width: 98%;
-      font-weight: 500;
-      box-shadow: 0px 2px 10px #e2d7f6;
-      transition: 0.2s;
-    }
-
-    .register-link:hover {
-      background: #c4a2ec;
-      color: #fff;
-      border-color: #9936c9;
-    }
-
-    .clearfix {
-      clear: both;
-    }
-  </style>
 </head>
-
 <body>
-  <div class="login-box">
-    <h2>成績管理系統登入</h2>
+<div class="container">
+  <h1>系統登入</h1>
 
-    {% if error %}
+  {% if error %}
     <div class="msg">{{ error }}</div>
-    {% endif %}
+  {% endif %}
 
-    <form method="post">
-      {% csrf_token %}
-      <label for="username">使用者名稱：</label>
-      <input type="text" name="username" id="username" required>
-      <div class="clearfix"></div>
+  {% if form.errors %}
+    <div class="msg">
+      {% for field, errors in form.errors.items %}
+        {% for e in errors %}
+          <p>{{ e }}</p>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  {% endif %}
 
-      <label for="password">密碼：</label>
-      <input type="password" name="password" id="password" required>
-      <div class="clearfix"></div>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">登入</button>
+  </form>
 
-      <button type="submit">登入</button>
-    </form>
-
-    {% if user_type != "staff" %}
-    <a class="register-link" href="{% url 'register' %}">註冊帳號</a>
-    {% endif %}
-  </div>
+  {% if user_type != "staff" %}
+    <div class="link">
+      <a href="{% url 'register' %}">沒有帳號?點擊註冊帳號</a>
+    </div>
+  {% endif %}
+</div>
 </body>
-
 </html>

@@ -15,6 +15,7 @@ class StudentAccount(models.Model):
         return f"{self.student_id} - {self.user.username}"
 
 
+
 # 教職員帳號（老師）
 class TeacherAccount(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -32,7 +33,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=50)
     avatar = models.ImageField(
-        upload_to='avatars/',
+        upload_to='avatars/',blank=True, null=True,
         default='avatars/default.png'
     )
 
