@@ -29,9 +29,19 @@
       font-weight: 600;
       transition: background 0.15s ease;
     }
-    .admin-btn:hover {
-      background: #b91c1c;
+    .admin-btn:hover { background: #b91c1c; }
+    .logout-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4338ca;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
     }
+    .logout-link:hover { background: #e0e7ff; }
     .container {
       max-width: 960px;
       margin: 28px auto;
@@ -56,12 +66,28 @@
       font-size: 15px;
       color: #374151;
     }
-    h2 {
-      font-size: 18px;
-      margin-top: 20px;
-      margin-bottom: 10px;
-      color: #111827;
+    .nav-boxes {
+      display: flex;
+      gap: 12px;
+      margin: 24px 0;
     }
+    .nav-box {
+      flex: 1;
+      background: #eef2ff;
+      color: #4338ca;
+      text-decoration: none;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .nav-box:hover { background: #e0e7ff; }
+    .nav-box.active { background: #2563eb; color: #fff; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -78,24 +104,57 @@
       color: #6b7280;
       font-weight: 600;
     }
-    tbody tr:hover {
-      background: #f9fafb;
-    }
     .empty {
       font-size: 14px;
       color: #9ca3af;
       text-align: center;
       margin-top: 10px;
     }
+    .comment-card {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+    }
+    .comment-card .author { font-weight: 600; color: #2563eb; }
+    .comment-card .content {
+      font-size: 14px;
+      color: #374151;
+      margin-top: 6px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .comment-card .timestamp {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      font-size: 14px;
+      resize: vertical;
+    }
+    .submit-btn {
+      margin-top: 10px;
+      background: #2563eb;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .submit-btn:hover { background: #1e40af; }
     .back-link {
       margin-top: 20px;
       font-size: 14px;
       text-align: right;
     }
-    .back-link a {
-      color: #2563eb;
-      text-decoration: underline;
-    }
+    .back-link a { color: #2563eb; text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -104,6 +163,7 @@
     {% if user.is_superuser %}
     <a href="/admin/" class="admin-btn">🔑 超級管理者</a>
     {% endif %}
+    <a href="{% url 'home' %}" class="logout-link">⎋ 登出</a>
   </div>
 
   <div class="container">
@@ -114,29 +174,101 @@
     <div class="info-box">課程代碼：{{ course.code }}</div>
     <div class="info-box">授課老師：{{ course.teacher }}</div>
 
-    <!-- 修課學生名單 -->
-    <h2>修課學生名單</h2>
-    {% if enrollments %}
-      <table>
-        <tr>
-          <th>學生姓名</th>
-          <th>學號</th>
-        </tr>
-        {% for e in enrollments %}
-        <tr>
-          <td>{{ e.student.name }}</td>
-          <td>{{ e.student.student_id }}</td>
-        </tr>
+    <!-- 該名學生的成績 -->
+    {% if grade %}
+  <div class="info-box" style="border-radius: 12px; overflow: hidden;">
+  <table style="width:100%; border-collapse:collapse; border-radius: 12px; overflow: hidden;">
+    <tr>
+      <th style="background:#e0e7ff; color:#4338ca;">期中</th>
+      <th style="background:#e0e7ff; color:#4338ca;">期末</th>
+      <th style="background:#e0e7ff; color:#4338ca;">平均</th>
+    </tr>
+    <tr>
+      <td style="background:#f9fafb; color:#111827;">{{ grade.midterm_score|default:"-" }}</td>
+      <td style="background:#f9fafb; color:#111827;">{{ grade.final_score|default:"-" }}</td>
+      <td style="background:#f9fafb; color:#2563eb; font-weight:bold;">
+        {% if grade.average %}
+          {{ grade.average|floatformat:1 }}
+        {% else %}
+          -
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+{% else %}
+  <div class="info-box">我的成績：尚未登錄</div>
+{% endif %}
+
+
+
+    <!-- 功能導覽卡片 -->
+    <div class="nav-boxes">
+      <div class="nav-box active" onclick="showTab('students')">👥 修課學生</div>
+      <div class="nav-box" onclick="showTab('comments')">💬 課程留言板</div>
+    </div>
+
+    <!-- 學生名單 -->
+    <div id="students" class="tab-content active">
+      <h2>修課學生名單</h2>
+      {% if enrollments %}
+        <table>
+          <tr>
+            <th>學生姓名</th>
+            <th>學號</th>
+          </tr>
+          {% for e in enrollments %}
+          <tr>
+            <td>{{ e.student.name }}</td>
+            <td>{{ e.student.student_id }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      {% else %}
+        <div class="empty">目前尚無學生修課。</div>
+      {% endif %}
+    </div>
+
+    <!-- 課程留言板 -->
+    <div id="comments" class="tab-content">
+      <h2>課程留言板</h2>
+      {% if comments %}
+        {% for comment in comments %}
+          <div class="comment-card">
+            <div class="author">{{ comment.user.username }}</div>
+            <div class="content">{{ comment.content }}</div>
+            <div class="timestamp">{{ comment.created_at|date:"Y-m-d H:i" }}</div>
+          </div>
         {% endfor %}
-      </table>
-    {% else %}
-      <div class="empty">目前尚無學生修課。</div>
-    {% endif %}
+      {% else %}
+        <div class="empty">目前尚無留言。</div>
+      {% endif %}
+
+      <!-- 留言表單 -->
+      <form method="post">
+        {% csrf_token %}
+        <textarea name="content" rows="4" maxlength="300" placeholder="輸入你的留言（最多 300 字）..."></textarea>
+        <button type="submit" class="submit-btn">送出留言</button>
+      </form>
+    </div>
 
     <!-- 返回連結 -->
     <div class="back-link">
       <a href="{% url 'student_dashboard' %}">← 回到成績總覽</a>
     </div>
   </div>
+
+  <script>
+    function showTab(tabId) {
+      // 隱藏所有 tab
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-box').forEach(el => el.classList.remove('active'));
+      // 顯示選中的 tab
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
 </body>
 </html>

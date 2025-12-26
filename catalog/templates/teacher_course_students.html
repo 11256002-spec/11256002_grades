@@ -10,9 +10,18 @@
             margin: 0;
             padding: 40px 0;
         }
+        .top-bar {
+            background: #2563eb;
+            color: #fff;
+            padding: 14px 28px;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
         .container {
             max-width: 960px;
-            margin: 0 auto;
+            margin: 28px auto;
             background: #ffffff;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
@@ -65,9 +74,32 @@
             text-align: center;
             padding: 24px 0;
         }
+        .logout-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .logout-link:hover {
+            background: #e0e7ff;
+        }
     </style>
 </head>
 <body>
+  <div class="top-bar">
+        <span>教師成績系統</span>
+        <div>
+            {% if user.is_superuser %}
+            <a href="/admin/" class="admin-btn">🔑 超級管理者</a>
+            {% endif %}
+            <a href="{% url 'home' %}" class="logout-link">⎋ 登出</a>
+        </div>
+    </div>
 <div class="container">
     <!-- 返回按鈕 -->
     <a href="{% url 'teacher_dashboard' %}" class="back-link">← 回到老師首頁</a>

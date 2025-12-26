@@ -18,7 +18,7 @@
             font-size: 18px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: center;            
         }
 
         .admin-btn {
@@ -35,22 +35,6 @@
         .admin-btn:hover {
             background: #b91c1c;
         }
-
-        .logout-btn {
-            font-size: 13px;
-            color: #fff;
-            background: #6b7280;
-            padding: 6px 14px;
-            border-radius: 999px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background 0.15s ease;
-            margin-left: 8px;
-        }
-        .logout-btn:hover {
-            background: #374151;
-        }
-
         .container {
             max-width: 960px;
             margin: 28px auto;
@@ -133,7 +117,7 @@
         .enroll-btn:hover {
             background: #1e40af;
         }
-        .badge-link {
+        .logout-link {
             display: inline-flex;
             align-items: center;
             padding: 6px 12px;
@@ -144,7 +128,7 @@
             font-weight: 600;
             text-decoration: none;
         }
-        .badge-link:hover {
+        .logout-link:hover {
             background: #e0e7ff;
         }
     </style>
@@ -156,7 +140,7 @@
             {% if user.is_superuser %}
             <a href="/admin/" class="admin-btn">🔑 超級管理者</a>
             {% endif %}
-            <a href="{% url 'home' %}" class="logout-btn">⎋ 登出</a>
+            <a href="{% url 'home' %}" class="logout-link">⎋ 登出</a>
         </div>
     </div>
 
@@ -165,7 +149,6 @@
             <h1>我的本學期課程與成績</h1>
             <div>
                 <a href="{% url 'enroll_ops' %}" class="enroll-btn">加選 / 退選課程</a>
-                <a href="{% url 'home' %}" class="badge-link">回到首頁</a>
             </div>
         </div>
 

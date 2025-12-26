@@ -13,7 +13,7 @@ from .models import (
     Student,
     TeacherAccount,
     Profile,
-    CourseComment
+    Comment,
 )
 
 # ========= 首頁 =========
@@ -294,36 +294,38 @@ def edit_profile(request):
     return render(request, "edit_profile.html", {"profile": profile})
 
 # ========= 課程留言板 =========
-@login_required
-def course_comments(request, course_id):
-    course = get_object_or_404(Course, id=course_id)
-    comments = CourseComment.objects.filter(course=course).order_by("-created_at")
 
-    if request.method == "POST":
-        content = request.POST.get("content")
-        if content:
-            CourseComment.objects.create(course=course, user=request.user, content=content)
-        return redirect("course_comments", course_id=course.id)
-
-    return render(request, "course_comments.html", {"course": course, "comments": comments})
 
 #=========課程資訊=========
+@login_required
 def course_detail(request, course_id):
-    course = Course.objects.get(id=course_id)
+    course = get_object_or_404(Course, id=course_id)
     enrollments = Enrollment.objects.filter(course=course)
-    return render(request, "course_detail.html", {
-        "course": course,
-        "enrollments": enrollments,
+    comments = Comment.objects.filter(course=course).order_by('-created_at')
+
+    # 取得該名學生的成績（如果是學生登入）
+    grade = None
+    try:
+        student_account = StudentAccount.objects.get(user=request.user)
+        student = Student.objects.get(student_id=student_account.student_id)
+        grade = Enrollment.objects.filter(course=course, student=student).first()
+    except StudentAccount.DoesNotExist:
+        pass
+
+    # 處理留言送出
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content and len(content) <= 300:
+            Comment.objects.create(course=course, user=request.user, content=content)
+            return redirect('course_detail', course_id=course.id)
+
+    return render(request, 'course_detail.html', {
+        'course': course,
+        'enrollments': enrollments,
+        'comments': comments,
+        'grade': grade,
     })
 
+
+
 # ========= 編輯留言 =========
-@login_required
-def edit_comment(request, comment_id):
-    comment = get_object_or_404(CourseComment, id=comment_id, user=request.user)
-    if request.method == "POST":
-        content = request.POST.get("content")
-        if content:
-            comment.content = content
-            comment.save()
-            return redirect("course_comments", course_id=comment.course.id)
-    return render(request, "edit_comment.html", {"comment": comment})

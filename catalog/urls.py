@@ -32,8 +32,7 @@ urlpatterns = [
 
     # 課程與留言
     path('course/<int:course_id>/', views.course_detail, name='course_detail'),
-    path('course/<int:course_id>/comments/', views.course_comments, name='course_comments'),
-    path('comment/<int:comment_id>/edit/', views.edit_comment, name='edit_comment'),
+
 
     # 老師首頁與課程管理
     path('teacher/dashboard/', views.teacher_dashboard, name='teacher_dashboard'),
