@@ -1,0 +1,7 @@
+<h2>修改留言</h2>
+<form method="post">
+  {% csrf_token %}
+  <textarea name="content" rows="4">{{ comment.content }}</textarea>
+  <button type="submit">更新</button>
+</form>
+<a href="javascript:history.back()">取消</a>

@@ -317,7 +317,8 @@ def course_detail(request, course_id):
         content = request.POST.get('content')
         if content and len(content) <= 300:
             Comment.objects.create(course=course, user=request.user, content=content)
-            return redirect('course_detail', course_id=course.id)
+            return redirect(f"/catalog/course/{course_id}?tab=comments")
+
 
     return render(request, 'course_detail.html', {
         'course': course,
@@ -329,3 +330,21 @@ def course_detail(request, course_id):
 
 
 # ========= 編輯留言 =========
+@login_required
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id, user=request.user)
+    comment.delete()
+    # 刪除後回到留言板
+    return redirect(f"{request.META.get('HTTP_REFERER', '/')}?tab=comments")
+
+@login_required
+def edit_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id, user=request.user)
+    if request.method == "POST":
+        new_content = request.POST.get("content")
+        if new_content:
+            comment.content = new_content
+            comment.save()
+        return redirect(f"{request.META.get('HTTP_REFERER', '/')}?tab=comments")
+    return render(request, "edit_comment.html", {"comment": comment})
+
