@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <title>{{ teacher.teacher_name }} 的課程 | 老師後台</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+            padding: 40px 0;
+        }
+        .top-bar {
+            background: #2563eb;
+            color: #fff;
+            padding: 14px 28px;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 28px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            padding: 24px 32px 32px;
+        }
+        .header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 4px;
+        }        
+        .admin-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+            background: #dc2626;
+            text-decoration: none;
+            margin-left: 12px;
+            transition: all 0.15s ease;
+        }
+        .admin-btn:hover {
+            background: #b91c1c;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        thead {
+            background: #f9fafb;
+        }
+        th, td {
+            padding: 12px 14px;
+            text-align: left;
+            font-size: 14px;
+        }
+        th {
+            color: #6b7280;
+            font-weight: 600;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        tbody tr {
+            border-bottom: 1px solid #f3f4f6;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        tbody tr:hover {
+            background: #f3f4f6;
+        }
+        td {
+            color: #111827;
+        }
+        .code {
+            font-family: "Cascadia Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 13px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #f3f4ff;
+            color: #4338ca;
+        }
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: #ecfdf3;
+            color: #166534;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .empty {
+            padding: 40px 0 10px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+        .logout-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .logout-link:hover {
+            background: #e0e7ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <span>教師成績系統</span>
+        <div>
+            {% if user.is_superuser %}
+            <a href="/admin/" class="admin-btn">🔑 超級管理者</a>
+            {% endif %}
+            <a href="{% url 'home' %}" class="logout-link">⎋ 登出</a>
+        </div>
+    </div>
+<div class="container">
+    <div class="header">
+        <div>
+            <div class="title">{{ teacher.teacher_name }} 的課程列表</div>
+            <div class="subtitle">管理本學期每門課程的修課學生與成績</div>
+        </div>
+        <div>
+            {% if user.is_superuser %}
+            <a href="/admin/" class="admin-btn">🔑 超級管理者</a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if courses %}
+    <table>
+        <thead>
+        <tr>
+            <th style="width: 18%;">課程代碼</th>
+            <th>課程名稱</th>
+            <th style="width: 15%;">修課人數</th>
+            <th style="width: 28%;">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for c in courses %}
+        <tr onclick="location.href='{% url 'teacher_course_detail' c.id %}'">
+            <td><span class="code">{{ c.code }}</span></td>
+            <td>{{ c.name }}</td>
+            <td><span class="pill">{{ c.enrollment_set.count }} 位學生</span></td>
+            <td style="color:#9ca3af;">點擊進入課程介面</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty">目前尚未設定任何課程。</div>
+    {% endif %}
+</div>
+</body>
+</html>

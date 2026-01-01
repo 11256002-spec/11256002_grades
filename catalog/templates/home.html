@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>成績系統入口</title>
+  <style>
+    body {
+      background: #f5f7fb;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+      margin: 0;
+      padding: 40px 0;
+    }
+    .container {
+      max-width: 460px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      padding: 32px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 18px;
+      color: #111827;
+    }
+    .btn {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 0;
+      border-radius: 8px;
+      background: #2563eb;
+      color: #fff;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .btn:hover {
+      background: #1e40af;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>成績系統入口</h1>
+  <a href="{% url 'student_login' %}" class="btn">學生登入</a>
+  <a href="{% url 'staff_login' %}" class="btn">教職員登入</a>
+
+  <!-- 改成純文字連結 -->
+  <p><a href="{% url 'register' %}" 
+    style="color:#2563eb;text-decoration:underline;">沒有帳號?點擊註冊帳號</a></p>
+
+  {% if user.is_authenticated and user.is_superuser %}
+    <a href="/admin/" class="btn">超級管理者</a>
+  {% endif %}
+</div>
+</body>
+</html>

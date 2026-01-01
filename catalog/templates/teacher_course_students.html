@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <title>{{ course.code }} {{ course.name }} | 修課學生名單</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+            padding: 40px 0;
+        }
+        .top-bar {
+            background: #2563eb;
+            color: #fff;
+            padding: 14px 28px;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .container {
+            max-width: 960px;
+            margin: 28px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            padding: 28px 40px 36px;
+        }
+        a.back-link {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        a.back-link:hover {
+            color: #2563eb;
+        }
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #111827;
+            margin: 12px 0;
+        }
+        .subtitle {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 18px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        th, td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f3f4f6;
+            text-align: center;
+            font-size: 14px;
+        }
+        th {
+            background: #f9fafb;
+            color: #6b7280;
+            font-weight: 600;
+        }
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+        .empty {
+            font-size: 14px;
+            color: #9ca3af;
+            text-align: center;
+            padding: 24px 0;
+        }
+        .logout-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .logout-link:hover {
+            background: #e0e7ff;
+        }
+    </style>
+</head>
+<body>
+  <div class="top-bar">
+        <span>教師成績系統</span>
+        <div>
+            {% if user.is_superuser %}
+            <a href="/admin/" class="admin-btn">🔑 超級管理者</a>
+            {% endif %}
+            <a href="{% url 'home' %}" class="logout-link">⎋ 登出</a>
+        </div>
+    </div>
+<div class="container">
+    <!-- 返回按鈕 -->
+    <a href="{% url 'teacher_dashboard' %}" class="back-link">← 回到老師首頁</a>
+    <a href="{% url 'teacher_course_detail' course.id %}" class="back-link">← 回到成績管理</a>
+
+    <!-- 課程標題 -->
+    <h1>{{ course.code }} {{ course.name }} - 修課學生名單</h1>
+    <p class="subtitle">本課程所有修課學生</p>
+
+    <!-- 學生名單 -->
+    {% if enrollments %}
+      <table>
+        <thead>
+          <tr>
+            <th>學號</th>
+            <th>姓名</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in enrollments %}
+          <tr>
+            <td>{{ e.student.student_id }}</td>
+            <td>{{ e.student.name }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="empty">目前尚無學生修課。</div>
+    {% endif %}
+</div>
+</body>
+</html>

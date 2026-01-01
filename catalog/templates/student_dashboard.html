@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <title>學生成績總覽</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+            padding: 40px 0;
+        }
+
+        .top-bar {
+            background: #2563eb;
+            color: #fff;
+            padding: 14px 28px;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-btn {
+            font-size: 13px;
+            color: #fff;
+            background: #ef4444;
+            padding: 6px 14px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.15s ease;
+            margin-left: 8px;
+        }
+
+        .admin-btn:hover {
+            background: #b91c1c;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 28px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            padding: 24px 32px 32px;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #111827;
+        }
+
+        .profile-box {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-bottom: 22px;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-box span.label {
+            color: #6b7280;
+            margin-right: 4px;
+        }
+
+        .profile-box img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            margin-right: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th,
+        td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #f3f4f6;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f9fafb;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #9ca3af;
+            margin-top: 20px;
+        }
+
+        .avg-box {
+            margin-top: 16px;
+            text-align: right;
+            font-size: 16px;
+        }
+
+        .avg-box span {
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .enroll-btn {
+            font-size: 14px;
+            color: #fff;
+            background: #2563eb;
+            padding: 6px 12px;
+            border-radius: 999px;
+            text-decoration: none;
+            margin-left: 8px;
+        }
+
+        .enroll-btn:hover {
+            background: #1e40af;
+        }
+
+        .logout-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .logout-link:hover {
+            background: #e0e7ff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-bar">
+        <span>學生成績系統</span>
+        <div>
+            {% if user.is_superuser %}
+            <a href="/admin/" class="admin-btn">🔑 超級管理者</a>
+            {% endif %}
+            <a href="{% url 'home' %}" class="logout-link">⎋ 登出</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header-row">
+            <h1>我的本學期課程與成績</h1>
+            <div>
+                <a href="{% url 'enroll_ops' %}" class="enroll-btn">加選 / 退選課程</a>
+            </div>
+        </div>
+
+        <!-- 個人資訊區塊 -->
+        <!-- 個人資訊區塊 -->
+        <div class="profile-box">
+            {% if profile.avatar_url %}
+            <img src="{{ profile.avatar_url }}" alt="頭像">
+            {% endif %}
+            <div style="flex:1;">
+                {% if student %}
+                <div><span class="label">姓名：</span>{{ student.name }}</div>
+                <div><span class="label">學號：</span>{{ student.student_id }}</div>
+                {% else %}
+                <div>目前尚未建立對應的學生資料，請聯絡系統管理者。</div>
+                {% endif %}
+            </div>
+            <div>
+                <a href="{% url 'edit_profile' %}"
+                    style="display:inline-block; padding:6px 14px; border-radius:999px; background:#e5f0ff; color:#1d4ed8; text-decoration:none; font-size:13px; font-weight:600;">
+                    修改個人資訊
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+
+    {% if enrollments %}
+    <table>
+        <tr>
+            <th>課程代碼</th>
+            <th>課程名稱</th>
+            <th>授課老師</th>
+            <th>期中</th>
+            <th>期末</th>
+            <th>平均</th>
+        </tr>
+        {% for e in enrollments %}
+        <tr onclick="location.href='{% url 'course_detail' e.course.id %}'" style="cursor:pointer;">
+            <td>{{ e.course.code }}</td>
+            <td>{{ e.course.name }}</td>
+            <td>{{ e.course.teacher }}</td>
+            <td>{{ e.midterm_score|default:"-" }}</td>
+            <td>{{ e.final_score|default:"-" }}</td>
+            <td>
+                {% if e.average %}
+                {{ e.average|floatformat:1 }}
+                {% else %}
+                -
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="avg-box">
+        本學期平均成績：
+        {% if avg_score %}
+        <span>{{ avg_score|floatformat:1 }}</span>
+        {% else %}
+        <span>尚未有完整成績</span>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="no-data">目前尚未有修課紀錄，請先加選課程。</div>
+    {% endif %}
+    </div>
+</body>
+
+</html>

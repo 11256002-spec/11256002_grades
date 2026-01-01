@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>加選 / 退選課程</title>
+  <style>
+    body {
+      background: #f5f7fb;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+      margin: 0;
+      padding: 40px 0;
+    }
+    .top-bar {
+      background: #2563eb;
+      color: #fff;
+      padding: 14px 28px;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .admin-btn {
+      font-size: 13px;
+      color: #fff;
+      background: #ef4444;
+      padding: 6px 14px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.15s ease;
+    }
+    .admin-btn:hover {
+      background: #b91c1c;
+    }
+    .container {
+      max-width: 960px;
+      margin: 28px auto;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      padding: 24px 32px 32px;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: #111827;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 18px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+    th, td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #f3f4f6;
+      text-align: center;
+      font-size: 14px;
+    }
+    th {
+      background: #f9fafb;
+      color: #6b7280;
+      font-weight: 600;
+    }
+    tbody tr:hover {
+      background: #f9fafb;
+    }
+    .btn-small {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: none;
+      font-size: 13px;
+      cursor: pointer;
+      color: #ffffff;
+    }
+    .btn-drop {
+      background: #ef4444;
+    }
+    .btn-add {
+      background: #22c55e;
+    }
+    .section-title {
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #111827;
+    }
+    .empty {
+      padding: 14px 0;
+      font-size: 13px;
+      color: #9ca3af;
+      text-align: center;
+    }
+    .link {
+      font-size: 13px;
+    }
+    .link a {
+      color: #2563eb;
+      text-decoration: underline;
+    }
+    .logout-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .logout-link:hover {
+            background: #e0e7ff;
+        }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <span>學生成績系統</span>
+    {% if user.is_superuser %}
+    <a href="/admin/" class="admin-btn">🔑 超級管理者</a>
+    {% endif %}
+    <a href="{% url 'home' %}" class="logout-link">⎋ 登出</a>
+  </div>
+
+  <div class="container">
+    <div class="header-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div>
+        <h1>加選 / 退選課程</h1>
+        {% if student %}
+          <div class="subtitle">
+            學生：{{ student.name }} {{ student.student_id }}
+          </div>
+        {% else %}
+          <div class="subtitle">
+            尚未建立對應學生資料，請聯絡系統管理者。
+          </div>
+        {% endif %}
+      </div>
+      <div class="link">
+        <a href="{% url 'student_dashboard' %}">回本學期成績</a>
+      </div>
+    </div>
+
+    {% if student %}
+      <!-- 已選課程 -->
+      <div class="section-title">已選課程</div>
+      {% if enrolled %}
+        <table>
+          <thead>
+            <tr>
+              <th>課程代碼</th>
+              <th>課程名稱</th>
+              <th>授課老師</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for e in enrolled %}
+            <tr>
+              <td>{{ e.course.code }}</td>
+              <td>{{ e.course.name }}</td>
+              <td>{{ e.course.teacher }}</td>
+              <td>
+                <form method="post" style="margin:0;">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="drop">
+                  <input type="hidden" name="course_id" value="{{ e.course.id }}">
+                  <button type="submit" class="btn-small btn-drop">退選</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="empty">目前尚未選任何課程。</div>
+      {% endif %}
+
+      <!-- 可選課程 -->
+      <div class="section-title" style="margin-top:22px;">可選課程</div>
+      {% if available %}
+        <table>
+          <thead>
+            <tr>
+              <th>課程代碼</th>
+              <th>課程名稱</th>
+              <th>授課老師</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in available %}
+            <tr>
+              <td>{{ c.code }}</td>
+              <td>{{ c.name }}</td>
+              <td>{{ c.teacher }}</td>
+              <td>
+                <form method="post" style="margin:0;">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="add">
+                  <input type="hidden" name="course_id" value="{{ c.id }}">
+                  <button type="submit" class="btn-small btn-add">加選</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="empty">目前沒有可以加選的課程。</div>
+      {% endif %}
+    {% endif %}
+  </div>
+</body>
+</html>
