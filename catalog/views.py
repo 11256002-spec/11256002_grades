@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import Q
 from django.contrib import messages
+from django.http import HttpResponseForbidden
 
 from .forms import StudentRegisterForm, ProfileForm
 from .models import (
@@ -371,18 +372,42 @@ def course_detail(request, course_id):
 # ========= 留言 編輯 / 刪除 =========
 @login_required
 def delete_comment(request, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id, user=request.user)
+    comment = get_object_or_404(Comment, id=comment_id)
+    course = comment.course
+
+    # 權限判斷：本人、授課老師、或管理者
+    if not (
+        comment.user == request.user or
+        course.teacher == request.user.username or
+        request.user.is_superuser or
+        request.user.is_staff
+    ):
+        return HttpResponseForbidden("你沒有權限刪除此留言")
+
     comment.delete()
-    return redirect(f"{request.META.get('HTTP_REFERER', '/')}?tab=comments")
+    return redirect(f"/catalog/course/{course.id}?tab=comments")
 
 
 @login_required
 def edit_comment(request, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id, user=request.user)
+    comment = get_object_or_404(Comment, id=comment_id)
+    course = comment.course
+
+    # 權限判斷：本人、授課老師、或管理者
+    if not (
+        comment.user == request.user or
+        course.teacher == request.user.username or
+        request.user.is_superuser or
+        request.user.is_staff
+    ):
+        return HttpResponseForbidden("你沒有權限修改此留言")
+
     if request.method == "POST":
         new_content = request.POST.get("content")
         if new_content:
             comment.content = new_content
             comment.save()
-        return redirect(f"{request.META.get('HTTP_REFERER', '/')}?tab=comments")
+        return redirect(f"/catalog/course/{course.id}?tab=comments")
+
     return render(request, "edit_comment.html", {"comment": comment})
+

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>修改留言</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+      background: #f5f7fb;
+      padding: 40px;
+      margin: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      padding: 24px;
+      box-sizing: border-box;
+    }
+    h1 {
+      font-size: 22px;
+      color: #2563eb;
+      margin-bottom: 16px;
+      text-align: left; /* 標題靠左 */
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      font-size: 14px;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+    #char-count {
+      font-size: 13px;
+      color: #6b7280;
+      text-align: right;
+    }
+    .actions {
+      display: flex;
+      justify-content: flex-end; /* 按鈕靠右 */
+      gap: 12px;
+    }
+    .btn {
+      background: #2563eb;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .btn:hover { background: #1e40af; }
+    .back-link {
+      background: #eef2ff;
+      color: #4338ca;
+    }
+    .back-link:hover { background: #e0e7ff; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>修改留言</h1>
+    <form method="post">
+      {% csrf_token %}
+      <textarea name="content" rows="4" maxlength="300">{{ comment.content }}</textarea>
+      <div id="char-count">剩餘字數：</div>
+      <div class="actions">
+        <button type="submit" class="btn">更新留言</button>
+        <a href="{% url 'course_detail' comment.course.id %}?tab=comments" class="btn back-link">← 返回留言板</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const textarea = document.querySelector("textarea[name='content']");
+      const counter = document.getElementById("char-count");
+
+      function updateCount() {
+        const remaining = 300 - textarea.value.length;
+        counter.textContent = `剩餘字數：${remaining}`;
+      }
+
+      // 初始化顯示
+      updateCount();
+
+      // 監聽輸入
+      textarea.addEventListener("input", updateCount);
+    });
+  </script>
+</body>
+</html>

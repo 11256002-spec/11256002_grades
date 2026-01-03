@@ -51,6 +51,36 @@
       box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
       padding: 24px 32px 32px;
     }
+    .course-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* ✅ 垂直置中，讓 h1 和 a 齊平 */
+  margin-bottom: 0px;
+}
+
+.course-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2563eb;
+  margin: 0;
+}
+
+.dashboard-link {
+  font-size: 14px;
+  color: #2563eb;
+  text-decoration: underline;
+  line-height: 1; /* ✅ 避免文字偏高 */
+  padding: 4px 0; /* ✅ 微調垂直位置 */
+  padding: 8px 18px;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    color: #374151;
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+}
+
     h1.course-title {
       font-size: 28px;
       font-weight: 700;
@@ -150,26 +180,23 @@
       cursor: pointer;
     }
     .submit-btn:hover { background: #1e40af; }
-    .back-link {
-      margin-top: 20px;
-      font-size: 14px;
-      text-align: right;
-    }
+
     .back-link a { color: #2563eb; text-decoration: underline; }
   </style>
 </head>
 <body>
   <div class="top-bar">
     <span>學生成績系統</span>
-    {% if user.is_superuser %}
-    <a href="/admin/" class="admin-btn">🔑 超級管理者</a>
-    {% endif %}
     <a href="{% url 'home' %}" class="logout-link">⎋ 登出</a>
   </div>
 
   <div class="container">
     <!-- 課程名稱 -->
-    <h1 class="course-title">{{ course.name }}</h1>
+    <div class="course-header">
+      <h1 class="course-title">{{ course.name }}</h1>
+      <a href="{% url 'student_dashboard' %}" class="dashboard-link">← 回到成績總覽</a>
+    </div>
+
 
     <!-- 課程代碼與授課老師 -->
     <div class="info-box">課程代碼：{{ course.code }}</div>
@@ -242,10 +269,10 @@
             <div class="content">{{ comment.content }}</div>
             <div class="timestamp">{{ comment.created_at|date:"Y-m-d H:i" }}</div>
             
-            {% if comment.user == user %} 
+            {% if comment.user == user or course.teacher == user.username or user.is_superuser or user.is_staff %} 
             <div class="actions"> 
-              <a href="{% url 'edit_comment' comment.id %}" class="edit-btn">✏️ 修改</a> 
-              <a href="{% url 'delete_comment' comment.id %}" class="delete-btn" 
+              <a href="{% url 'edit_comment' comment.id %}?tab=comments" class="edit-btn">✏️ 修改</a> 
+              <a href="{% url 'delete_comment' comment.id %}?tab=comments" class="delete-btn" 
               onclick="return confirm('確定要刪除這則留言嗎？');">🗑️ 刪除</a> 
             </div> 
             {% endif %}
@@ -261,11 +288,6 @@
         <textarea name="content" rows="4" maxlength="300" placeholder="輸入你的留言（最多 300 字）..."></textarea>
         <button type="submit" class="submit-btn">送出留言</button>
       </form>
-    </div>
-
-    <!-- 返回連結 -->
-    <div class="back-link">
-      <a href="{% url 'student_dashboard' %}">← 回到成績總覽</a>
     </div>
   </div>
 
